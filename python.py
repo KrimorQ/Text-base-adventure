@@ -1,4 +1,4 @@
-print("Press Y to enter or Q to quit") #start screen
+print("Welcome to an adventure, press Y to play or Q to Exit")
 
 user = input("Your choice: ").upper() #what to enter to play (Y,Q)
 
@@ -10,5 +10,3 @@ elif user == "Q":
 
 else:
     print("Please enter valid command (Y,Q)")
-
-
