@@ -75,28 +75,66 @@ import random
 width = 5
 height = 5
 
-cell_symbols = {#symbols on the map for different cell types
+#symbols on the map for different cell types
+cell_symbols = {
     'Empty': '?',
     'Treasure': 'T',
     'Enemy': 'E',
 }
 hidden_cell = '?' #unexplored location
 
-#generate the map and the symbols
-def generate_map(width, height, character_initial):
+#funtion to generate map
+def generate_map(width, height,):
+    #initialize all cells as hidden
     game_map = [[hidden_cell for _ in range(width)] for _ in range(height)]
-    center_x, center_y = width // 2, height // 2
-    game_map[center_y][center_x] = character_initial #place the character initial in the center of map
+   ##center_x, center_y = width // 2, height // 2
+    #game_map[center_y][center_x] = character_initial #place the character initial in the center of map
     return game_map
 
-def display_map(game_map):
-    for row in game_map:
-        print(" | ".join(row))
-    print("\n")
+#display the map with the character potition in
+def display_map(game_map, character_pos):
+    for y, row in enumerate(game_map):
+        for x, cell in enumerate(row):
+            #print the character initial if the current position matches
+            if (x, y) == character_pos:
+                print(character_initial + ' | ', end='')
+            else:
+                print(cell + ' | ', end='')
+        print()#new line at the end of each row
+    print("\n") #extra space aftetr the map for claraity
 
-character_initial = character_name[0].upper()
+def move_character(direction, character_pos, width, height):
+    x, y = character_pos
+    if direction == 'w' and  y > 0: # move up
+        y -= 1
+    elif direction == 's' and  y < height - 1: # move down
+        y += 1
+    elif direction == 'a' and x > 0: # move left
+        x -= 1
+    elif direction == 'd' and x < width - 1: # move right
+        x += 1
+    return x, y
+
+
+#Main game logic
+character_initial = character_name[0].upper() #First letter of character_name
+game_map = generate_map(width, height)
+character_pos = (width // 2, height // 2) #start character in the center of the map
+
+#Main game loop for movement
+while True:
+    display_map(game_map, character_pos)
+    direction = input("Move (WASD)? ").lower()
+    if direction in ['w', 'a', 's', 'd']:
+        character_pos = move_character(direction, character_pos, width, height)
+    elif direction == 'q': #quit the game
+        print("Quiting game.")
+        break
+    else:
+        print("Invalid input. use WASD to move, or Q to quit.")
+
 #creating the map
-game_map = generate_map(width, height, character_initial)
+#game_map = generate_map(width, height, character_initial)
 
 #display the map
-display_map(game_map)
+#display_map(game_map)
