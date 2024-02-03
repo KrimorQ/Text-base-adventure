@@ -90,7 +90,7 @@ def generate_map(width, height,):
 
 
 #display the minimap
-def display_map(game_map, character_pos):
+def display_map(game_map, character_pos, character_initial):
     print("\nMinimap:")
     for y, row in enumerate(game_map):
         for x, cell in enumerate(row):
@@ -102,19 +102,53 @@ def display_map(game_map, character_pos):
         print()#new line at the end of each row
     print() #extra space aftetr the map for claraity
 
+
 def move_character(direction, character_pos, width, height):
     x, y = character_pos
-    if direction == 'w' and  y > 0: y -= 1 # move up
-    elif direction == 's' and  y < height - 1: y += 1 # move down
-    elif direction == 'a' and x > 0: x -= 1 # move left
-    elif direction == 'd' and x < width - 1: x += 1 # move right
+    #move up
+    if direction == 'w' and y > 0:
+        y -= 1
+    elif direction == 's' and y < height - 1:
+        y += 1
+    elif direction == 'a' and x > 0:
+        x -= 1
+    elif direction == 'd' and x < width - 1:
+        x += 1
     return x, y
 
+#movement inside the map and can not exit map
+def get_available_directions(character_pos, width, height):
+    #unpack the characters current position
+    x, y = character_pos
+    directions = []
 
-#Main game logic
-character_initial = character_name[0].upper() #First letter of character_name
+    #check for each direction if the move is possible
+    if y > 0: #can move up
+        directions.append(('w', 'up'))
+    if y < height - 1: #can move down
+        directions.append(('s', 'down'))
+    if x > 0: #can move left
+        directions.append(('a', 'left'))
+    if x < width - 1: #can move right
+        directions.append(('d', 'right'))
+
+    return directions
+
+def prompt_direction(directions):
+    direction_keys = [direction[0] for direction in directions]
+    direction_names = [direction[1] for direction in directions]
+    direction_input = input(f"Choose a direction to move ({'/'.join(direction_names)}): ").lower()
+    if direction_input in direction_keys:
+        return direction_input
+    else:
+        print("Invalid direction,")
+        return None
+
+#Initialize character name and position
+character_initial = character_name[0].upper()
 game_map = generate_map(width, height)
-character_pos = (width // 2, height // 2) #start character in the center of the map
+character_pos = (width // 2, height // 2)
+
 
 #Game loop
 while True:
@@ -123,7 +157,7 @@ while True:
     print("Would you like to [Enter] the building or [Continue] on your journey?")
 
     #Display the minimap
-    display_map(game_map, character_pos)
+    display_map(game_map, character_pos, character_initial)
 
     action = input("Your action (enter/continue/q to quit): ").lower()
 
@@ -133,17 +167,18 @@ while True:
         #add logic for entering the building
     elif action == "continue":
         print("Continuing on your journey...")
-        #ask for direction since the player chose to continue
-        direction = input("Choose a direction to move ([w] for up, [a] for left, [s] for down): ").lower()
-        if direction in ['w', 'a', 's']:
-            #ensure not moving right if at the edge
-            new_pos = move_character(direction, character_pos, width, height)
-            #Only update the position if it's valid move
-            character_pos = new_pos
-        else:
-            print("Invalid direction. Use [W] [A] [S] to move")
+        #get avalible directions based on the current potition
+        available_directions = get_available_directions(character_pos, width, height)
+
+        if not available_directions:
+            print("No availble directions to move.")
+            continue
+
+        direction = prompt_direction(available_directions)
+        if direction:
+            character_pos = move_character(direction, character_pos, width, height)
     elif action == "q":
         print("Quiting game.")
         break
     else:
-        print("Invalid action.")
+        print("Invaldid action.")
