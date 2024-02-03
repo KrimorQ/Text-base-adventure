@@ -86,13 +86,12 @@ hidden_cell = '?' #unexplored location
 #funtion to generate map
 def generate_map(width, height,):
     #initialize all cells as hidden
-    game_map = [[hidden_cell for _ in range(width)] for _ in range(height)]
-   ##center_x, center_y = width // 2, height // 2
-    #game_map[center_y][center_x] = character_initial #place the character initial in the center of map
-    return game_map
+    return [[hidden_cell for _ in range(width)] for _ in range(height)]
 
-#display the map with the character potition in
+
+#display the minimap
 def display_map(game_map, character_pos):
+    print("\nMinimap:")
     for y, row in enumerate(game_map):
         for x, cell in enumerate(row):
             #print the character initial if the current position matches
@@ -101,18 +100,14 @@ def display_map(game_map, character_pos):
             else:
                 print(cell + ' | ', end='')
         print()#new line at the end of each row
-    print("\n") #extra space aftetr the map for claraity
+    print() #extra space aftetr the map for claraity
 
 def move_character(direction, character_pos, width, height):
     x, y = character_pos
-    if direction == 'w' and  y > 0: # move up
-        y -= 1
-    elif direction == 's' and  y < height - 1: # move down
-        y += 1
-    elif direction == 'a' and x > 0: # move left
-        x -= 1
-    elif direction == 'd' and x < width - 1: # move right
-        x += 1
+    if direction == 'w' and  y > 0: y -= 1 # move up
+    elif direction == 's' and  y < height - 1: y += 1 # move down
+    elif direction == 'a' and x > 0: x -= 1 # move left
+    elif direction == 'd' and x < width - 1: x += 1 # move right
     return x, y
 
 
@@ -121,20 +116,34 @@ character_initial = character_name[0].upper() #First letter of character_name
 game_map = generate_map(width, height)
 character_pos = (width // 2, height // 2) #start character in the center of the map
 
-#Main game loop for movement
+#Game loop
 while True:
+    #example adventure text
+    print("You enter the forest where there is a building and some berries on the side of the road ")
+    print("Would you like to [Enter] the building or [Continue] on your journey?")
+
+    #Display the minimap
     display_map(game_map, character_pos)
-    direction = input("Move (WASD)? ").lower()
-    if direction in ['w', 'a', 's', 'd']:
-        character_pos = move_character(direction, character_pos, width, height)
-    elif direction == 'q': #quit the game
+
+    action = input("Your action (enter/continue/q to quit): ").lower()
+
+    #process action
+    if action == "enter":
+        print("Entering the building...")
+        #add logic for entering the building
+    elif action == "continue":
+        print("Continuing on your journey...")
+        #ask for direction since the player chose to continue
+        direction = input("Choose a direction to move ([w] for up, [a] for left, [s] for down): ").lower()
+        if direction in ['w', 'a', 's']:
+            #ensure not moving right if at the edge
+            new_pos = move_character(direction, character_pos, width, height)
+            #Only update the position if it's valid move
+            character_pos = new_pos
+        else:
+            print("Invalid direction. Use [W] [A] [S] to move")
+    elif action == "q":
         print("Quiting game.")
         break
     else:
-        print("Invalid input. use WASD to move, or Q to quit.")
-
-#creating the map
-#game_map = generate_map(width, height, character_initial)
-
-#display the map
-#display_map(game_map)
+        print("Invalid action.")
