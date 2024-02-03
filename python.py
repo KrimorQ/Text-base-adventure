@@ -75,19 +75,28 @@ import random
 width = 5
 height = 5
 
-cell_types = ['Empty', 'Enemy', 'Treasure'] #what room are availble to generate
+cell_symbols = {#symbols on the map for different cell types
+    'Empty': '?',
+    'Treasure': 'T',
+    'Enemy': 'E',
+}
+hidden_cell = '?' #unexplored location
 
-#generate the map
-def generate_map(width, height, cell_types):
-    return [[random.choice(cell_types) for _ in range(width)] for _ in range(height)]
+#generate the map and the symbols
+def generate_map(width, height, character_initial):
+    game_map = [[hidden_cell for _ in range(width)] for _ in range(height)]
+    center_x, center_y = width // 2, height // 2
+    game_map[center_y][center_x] = character_initial #place the character initial in the center of map
+    return game_map
 
 def display_map(game_map):
     for row in game_map:
         print(" | ".join(row))
     print("\n")
 
+character_initial = character_name[0].upper()
 #creating the map
-game_map = generate_map(width, height, cell_types)
+game_map = generate_map(width, height, character_initial)
 
 #display the map
 display_map(game_map)
