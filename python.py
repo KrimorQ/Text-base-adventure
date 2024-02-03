@@ -59,8 +59,8 @@ while True:
         class_index = (class_index + 1) % len(classes)
 
     elif choise == "y":
-        character_name = classes[class_index]
-        print(f"{character_name}, you have chosen to be a {character_name}.")
+        selected_class = current_class
+        print(f"{character_name}, you have chosen to be a {current_class}.")
         break
     elif choise == "q":
         print("Exiting the game")
@@ -69,3 +69,25 @@ while True:
     else:
         print("Invalid input. press [N] to cycle throu classes and [Y] to conferm current class")
     
+import random
+
+#map size in cells
+width = 5
+height = 5
+
+cell_types = ['Empty', 'Enemy', 'Treasure'] #what room are availble to generate
+
+#generate the map
+def generate_map(width, height, cell_types):
+    return [[random.choice(cell_types) for _ in range(width)] for _ in range(height)]
+
+def display_map(game_map):
+    for row in game_map:
+        print(" | ".join(row))
+    print("\n")
+
+#creating the map
+game_map = generate_map(width, height, cell_types)
+
+#display the map
+display_map(game_map)
